@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h2>User Login</h2>
+    <form id="loginForm">
+        <div class="input-container">
+            <label for="loginUsername">Username:</label>
+            <input type="text" id="loginUsername" name="loginUsername" required>
+        </div>
+        <div class="input-container">
+            <label for="loginPassword">Password:</label>
+            <a href="forgotpassword.html" class="forgot-password">Forgot Password?</a>
+            <input type="password" id="loginPassword" name="loginPassword" required>
+        </div>
+        <input type="submit" value="Login">
+    </form>
+
+    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+</div>
+
+<script>
+    // Function to handle login form submission
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        // Dummy authentication logic
+        const foundUser = users.find(user => user.username === username && user.password === password);
+        if (foundUser) {
+            alert('Login successful!');
+            // Redirect to user's dashboard or another page
+        } else {
+            alert('Invalid username or password. Please try again.');
+        }
+    });
+</script>
+
+</body>
+</html>
+

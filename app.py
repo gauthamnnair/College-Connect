@@ -139,17 +139,34 @@ def submit_admission():
     # Query colleges from the data database based on user input
     conn_data = sqlite3.connect('data.db')
     c_data = conn_data.cursor()
-    c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
-    colleges = c_data.fetchall()
+    colleges = []
+    distinct_branch = []
+    try:
+        if mhcet_percentile and jee_percentile:
+            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ? OR seat_type = 'AI'", (mhcet_percentile, category))
+            colleges += c_data.fetchall()
+            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = ? OR seat_type = 'AI'", (jee_percentile, category))
+            distinct_branch += c_data.fetchall()
+        elif jee_percentile:
+            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile,))
+            colleges += c_data.fetchall()
+            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile,))
+            distinct_branch += c_data.fetchall()
+        elif mhcet_percentile:
+            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
+            colleges += c_data.fetchall()
+            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
+            distinct_branch += c_data.fetchall()
+        else:
+            raise ValueError("Both MHCET and JEE percentiles are None.")
+    except sqlite3.Error as e:
+        print("Error querying database:", e)
+    finally:
+        conn_data.close()
 
-    if jee_percentile:
-        c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (jee_percentile, category))
-        colleges += c_data.fetchall()
+    return render_template('result.html', colleges=colleges, distinct_branch=distinct_branch)
 
-    conn_data.close()
-    conn_admissions.close()
-    
-    return render_template('result.html', colleges=colleges)
+
 
 @app.route('/filter', methods=['POST'])
 def filter_colleges():
@@ -163,8 +180,7 @@ def filter_colleges():
     
     distinct_branches = set(college['branch'] for college in colleges)
 
-    return render_template('result.html', colleges=filtered_colleges, distinct_branches=distinct_branches)
-
+    return render_template('result.html', colleges=filtered_colleges, distinct_branches=distinct_branches)  
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

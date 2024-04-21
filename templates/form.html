@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Admission Form</h2>
+    </div>
+    <form action="/submit" method="POST">
+        <label for="mhcet_percentile">MHCET Percentile:</label>
+        <input type="number" id="mhcet_percentile" name="mhcet_percentile" step="0.01" min="0" max="100" required><br><br>
+        
+        <label for="jee_percentile">JEE Percentile:</label>
+        <input type="number" id="jee_percentile" name="jee_percentile" step="0.01" min="0" max="100" required><br><br>
+        
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="General">General</option>
+            <option value="OBC">OBC</option>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+        </select><br><br>
+        
+        <label for="branch_preference">Branch Preference:</label>
+        <input type="text" id="branch_preference" name="branch_preference" required><br><br>
+        
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+        
+        <label for="hostel_preference">Hostel/Day Preference:</label>
+        <input type="text" id="hostel_preference" name="hostel_preference" required><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+

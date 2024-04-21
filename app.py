@@ -84,6 +84,54 @@ def login():
 @app.route('/index/<username>')
 def index(username):
     return f'Welcome, {username}!'
+
+# Function to create the database table if it doesn't exist
+def create_admissions_table():
+    conn = sqlite3.connect('admissions.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS admissions
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 mhcet_percentile FLOAT NOT NULL,
+                 jee_percentile FLOAT NOT NULL,
+                 category TEXT NOT NULL,
+                 branch_preference TEXT NOT NULL,
+                 location TEXT NOT NULL,
+                 hostel_preference TEXT NOT NULL)''')
+    conn.commit()
+    conn.close()
+
+create_admissions_table()
+
+# Route to render the admission form
+@app.route('/admission', methods=['GET'])
+def admission_form():
+    return render_template('form.html')
+
+# Route to handle admission form submission
+@app.route('/submit', methods=['POST'])
+def submit_admission():
+    mhcet_percentile = request.form['mhcet_percentile']
+    jee_percentile = request.form['jee_percentile']
+    category = request.form['category']
+    branch_preference = request.form['branch_preference']
+    location = request.form['location']
+    hostel_preference = request.form['hostel_preference']
+
+    # Insert form data into the database
+    conn = sqlite3.connect('admissions.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category, branch_preference, location, hostel_preference) VALUES (?, ?, ?, ?, ?, ?)",
+              (mhcet_percentile, jee_percentile, category, branch_preference, location, hostel_preference))
+    conn.commit()
+    conn.close()
+
+    # Redirect to a success page or any other page
+    return redirect(url_for('success'))
+
+# Route to render a success page
+@app.route('/success', methods=['GET'])
+def success():
+    return "Admission form submitted successfully!"
     
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

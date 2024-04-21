@@ -9,24 +9,27 @@
         <h1>Admission Result</h1>
     </div>
     <div class="filter-container">
-        <h2>Filter by</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Branch</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for branch_tuple in distinct_branches %}
-                <tr>
-                    <td>
-                        <input type="checkbox" id="{{ branch_tuple[0] }}" name="branch" value="{{ branch_tuple[0] }}">
-                        <label for="{{ branch_tuple[0] }}">{{ branch_tuple[0] }}</label>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <h2>Filter by Branch</h2>
+        <form action="{{ url_for('submit_admission') }}" method="post">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Branch</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for branch_tuple in distinct_branches %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="{{ branch_tuple[0] }}" name="branches" value="{{ branch_tuple[0] }}">
+                            <label for="{{ branch_tuple[0] }}">{{ branch_tuple[0] }}</label>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit">Apply Filters</button>
+        </form>
     </div>
 
     <div class="table-container">

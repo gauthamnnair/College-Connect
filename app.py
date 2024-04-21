@@ -108,20 +108,6 @@ create_admissions_table()
 def admission_form():
     return render_template('form.html')
 
-def generate_sql_commands(mhcet_percentile, jee_percentile, category):
-    sql_commands = []
-
-    # Query colleges from the data database based on MHCET percentile and category
-    sql_mhcet = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?"
-    sql_commands.append((sql_mhcet, (mhcet_percentile, category)))
-
-    # If JEE percentile is provided, query colleges for JEE percentile and category
-    if jee_percentile:
-        sql_jee = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?"
-        sql_commands.append((sql_jee, (jee_percentile, category)))
-
-    return sql_commands
-
 @app.route('/submit', methods=['POST'])
 def submit_admission():
     mhcet_percentile = request.form.get('mhcet_percentile')
@@ -139,7 +125,8 @@ def submit_admission():
         print("Error inserting data into admissions table:", e)
     finally:
         conn_admissions.close()
-
+    mhcet_query = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?"
+    jee_query = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'"
     # Query colleges from the data database based on user input
     colleges = []
     distinct_branches = []
@@ -147,19 +134,23 @@ def submit_admission():
         conn_data = sqlite3.connect('data.db')
         c_data = conn_data.cursor()
         if mhcet_percentile and jee_percentile:
-            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
+            c_data.execute(mhcet_query, (mhcet_percentile, category))
             colleges = c_data.fetchall()
-            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile, category))
+            c_data.execute("SELECT DISTINCT branch FROM (" +mhcet_query+ ")", (mhcet_percentile, category))
             distinct_branches = c_data.fetchall()
+            c_data.execute(jee_query, (jee_percentile,))
+            colleges.extend(c_data.fetchall())
+            c_data.execute("SELECT DISTINCT branch FROM (" +jee_query+ ")", (jee_percentile,))
+            distinct_branches.extend(c_data.fetchall())
         elif jee_percentile:
-            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile,))
+            c_data.execute(jee_query, (jee_percentile,))
             colleges = c_data.fetchall()
-            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile,))
+            c_data.execute("SELECT DISTINCT branch FROM (" +jee_query+ ")", (jee_percentile,))
             distinct_branches = c_data.fetchall()
         elif mhcet_percentile:
-            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
+            c_data.execute(mhcet_query, (mhcet_percentile, category))
             colleges = c_data.fetchall()
-            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
+            c_data.execute("SELECT DISTINCT branch FROM (" +mhcet_query+ ")", (mhcet_percentile, category))
             distinct_branches = c_data.fetchall()
         else:
             raise ValueError("Both MHCET and JEE percentiles are None.")

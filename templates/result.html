@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admission Result</title>
+</head>
+<body>
+    <h1>Admission Result</h1>
+    <h2>Colleges and Branches</h2>
+    <ul>
+        {% for college in colleges %}
+        <li>{{ college.college_name }} - {{ college.branch }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+

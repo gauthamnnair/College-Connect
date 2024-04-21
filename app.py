@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+import csv
+import os
 
 app = Flask(__name__)
+
+# Define the path to the templates directory
+template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
 
 # Function to create the database table if it doesn't exist
 def create_table():
@@ -55,7 +60,6 @@ def signup():
     return redirect(url_for('login_form'))
 
 # Render the login.html template for the login page
-# Render the login.html template for the login page
 @app.route('/login', methods=['GET'])
 def login_form():
     return render_template('login.html')
@@ -96,7 +100,6 @@ def create_admissions_table():
                      jee_percentile FLOAT NOT NULL,
                      category TEXT NOT NULL)''')
     conn.commit()
-    conn.close()
 
 create_admissions_table()
 
@@ -108,11 +111,12 @@ def admission_form():
 # Route to handle admission form submission
 @app.route('/submit', methods=['POST'])
 def submit_admission():
-    mhcet_percentile = request.form['mhcet_percentile']
-    jee_percentile = request.form['jee_percentile']
-    category = request.form['category']
+    mhcet_percentile = request.form.get('mhcet_percentile')
+    jee_percentile = request.form.get('jee_percentile')
+    category = request.form.get('category')
+    category += 'S' 
 
-    # Insert form data into the database
+    # Insert form data into the admissions table
     conn = sqlite3.connect('admissions.db')
     c = conn.cursor()
     c.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
@@ -120,14 +124,48 @@ def submit_admission():
     conn.commit()
     conn.close()
 
-    # Redirect to a success page or any other page
-    return redirect(url_for('success'))
+    # Extract colleges based on user input
+    if mhcet_percentile and jee_percentile:
+        colleges = extract_colleges_mhcet('data.csv', float(mhcet_percentile), category)
+        colleges.extend(extract_colleges_mhcet('data.csv', float(jee_percentile), category))
+    elif mhcet_percentile:
+        colleges = extract_colleges_mhcet('data.csv', float(mhcet_percentile), category)
+    elif jee_percentile:
+        colleges = extract_colleges_mhcet('data.csv', float(jee_percentile), category)
+    else:
+        # No percentiles provided
+        return "Please provide MHCET or JEE percentile."
 
-# Route to render a success page
-@app.route('/success', methods=['GET'])
-def success():
-    return "Admission form submitted successfully!"
-    
+    # Render the result template with the extracted colleges and branches
+    return render_template('result.html', colleges=colleges)
+
+# Function to extract colleges based on user input
+def extract_colleges_mhcet(csv_file, mhcet_percentile, category):
+    colleges = []
+    with open(csv_file, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if float(row['min']) <= mhcet_percentile and row['seat_type'] == category:
+                college = {
+                    'college_name': row['college_name'],
+                    'branch': row['branch']
+                }
+                colleges.append(college)
+    return colleges
+
+def extract_colleges_jee(csv_file, jee_percentile, category):
+    colleges = []
+    with open(csv_file, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if float(row['min']) <= jee_percentile and row['seat_type'] == 'AI':
+                college = {
+                    'college_name': row['college_name'],
+                    'branch': row['branch']
+                }
+                colleges.append(college)
+    return colleges
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
 

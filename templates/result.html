@@ -2,15 +2,27 @@
 <html>
 <head>
     <title>Admission Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Admission Result</h1>
     <h2>Colleges and Branches</h2>
-    <ul>
-        {% for college in colleges %}
-        <li>{{ college.college_name }} - {{ college.branch }}</li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>College Name</th>
+                <th>Branch</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for college in colleges %}
+            <tr>
+                <td>{{ college.college_name }}</td>
+                <td>{{ college.branch }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
 

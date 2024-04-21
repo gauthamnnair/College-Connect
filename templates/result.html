@@ -2,22 +2,10 @@
 <html>
 <head>
     <title>Admission Result</title>
-     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Admission Result</h1>
-    <h2>Filter by Branch</h2>
-    <form action="/filter" method="post">
-        <label>Filter by Branch:</label>
-        <br>
-        {% for branch in distinct_branches %}
-        <input type="checkbox" id="{{ branch }}" name="branch" value="{{ branch }}">
-        <label for="{{ branch }}">{{ branch }}</label>
-        <br>
-        {% endfor %}
-        <input type="submit" value="Apply Filter">
-    </form>
-    
     <h2>Colleges and Branches</h2>
     <table>
         <thead>
@@ -29,8 +17,8 @@
         <tbody>
             {% for college in colleges %}
             <tr>
-                <td>{{ college.college_name }}</td>
-                <td>{{ college.branch }}</td>
+                <td>{{ college[0] }}</td>
+                <td>{{ college[1] }}</td>
             </tr>
             {% endfor %}
         </tbody>

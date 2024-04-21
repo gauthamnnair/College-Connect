@@ -108,34 +108,48 @@ create_admissions_table()
 def admission_form():
     return render_template('form.html')
 
-# Route to handle admission form submission
+def generate_sql_commands(mhcet_percentile, jee_percentile, category):
+    sql_commands = []
+
+    # Query colleges from the data database based on MHCET percentile and category
+    sql_mhcet = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?"
+    sql_commands.append((sql_mhcet, (mhcet_percentile, category)))
+
+    # If JEE percentile is provided, query colleges for JEE percentile and category
+    if jee_percentile:
+        sql_jee = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?"
+        sql_commands.append((sql_jee, (jee_percentile, category)))
+
+    return sql_commands
+
 @app.route('/submit', methods=['POST'])
 def submit_admission():
     mhcet_percentile = request.form.get('mhcet_percentile')
     jee_percentile = request.form.get('jee_percentile')
-    category = request.form.get('category')
-    category += 'S'
+    category = request.form.get('category') + 'S'  # Assuming category is concatenated with 'S'
 
     # Insert form data into the admissions table
-    conn = sqlite3.connect('admissions.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
-              (mhcet_percentile, jee_percentile, category))
-    conn.commit()
+    conn_admissions = sqlite3.connect('admissions.db')
+    c_admissions = conn_admissions.cursor()
+    c_admissions.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
+                         (mhcet_percentile, jee_percentile, category))
+    conn_admissions.commit()
+    conn_admissions.close()
 
-    # Query colleges from the database based on user input
-    c.execute("SELECT college_name, branch FROM data WHERE min <= ? AND seat_type = ?", (mhcet_percentile, category))
-    colleges = c.fetchall()
+    # Query colleges from the data database based on user input
+    conn_data = sqlite3.connect('data.db')
+    c_data = conn_data.cursor()
+    c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
+    colleges = c_data.fetchall()
 
     if jee_percentile:
-        c.execute("SELECT college_name, branch FROM data WHERE min <= ? AND seat_type = ?", (jee_percentile, category))
-        colleges += c.fetchall()
+        c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (jee_percentile, category))
+        colleges += c_data.fetchall()
 
-    conn.close()
-
-    # Render the result template with the extracted colleges and branches
-    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches)
-
+    conn_data.close()
+    conn_admissions.close()
+    
+    return render_template('result.html', colleges=colleges)
 
 @app.route('/filter', methods=['POST'])
 def filter_colleges():

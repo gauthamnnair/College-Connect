@@ -73,6 +73,21 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 0.8em;
 }
 
+/* Style for filter container */
+.filter-container {
+    float: left;
+    width: 20%;
+    margin-right: 20px; /* Adjust the margin as needed */
+}
+
+/* Style for table container */
+.table-container {
+    float: right;
+    width: 77%; /* Adjust the width as needed */
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+
+/* Style for table */
 table {
     border-collapse: collapse;
     width: 100%;

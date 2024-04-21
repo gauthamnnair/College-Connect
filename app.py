@@ -129,34 +129,38 @@ def submit_admission():
     category = request.form.get('category') + 'S'  # Assuming category is concatenated with 'S'
 
     # Insert form data into the admissions table
-    conn_admissions = sqlite3.connect('admissions.db')
-    c_admissions = conn_admissions.cursor()
-    c_admissions.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
-                         (mhcet_percentile, jee_percentile, category))
-    conn_admissions.commit()
-    conn_admissions.close()
+    try:
+        conn_admissions = sqlite3.connect('admissions.db')
+        c_admissions = conn_admissions.cursor()
+        c_admissions.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
+                             (mhcet_percentile, jee_percentile, category))
+        conn_admissions.commit()
+    except sqlite3.Error as e:
+        print("Error inserting data into admissions table:", e)
+    finally:
+        conn_admissions.close()
 
     # Query colleges from the data database based on user input
-    conn_data = sqlite3.connect('data.db')
-    c_data = conn_data.cursor()
     colleges = []
-    distinct_branch = []
+    distinct_branches = []
     try:
+        conn_data = sqlite3.connect('data.db')
+        c_data = conn_data.cursor()
         if mhcet_percentile and jee_percentile:
-            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ? OR seat_type = 'AI'", (mhcet_percentile, category))
-            colleges += c_data.fetchall()
-            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = ? OR seat_type = 'AI'", (jee_percentile, category))
-            distinct_branch += c_data.fetchall()
+            c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
+            colleges = c_data.fetchall()
+            c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile, category))
+            distinct_branches = c_data.fetchall()
         elif jee_percentile:
             c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile,))
-            colleges += c_data.fetchall()
+            colleges = c_data.fetchall()
             c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'", (jee_percentile,))
-            distinct_branch += c_data.fetchall()
+            distinct_branches = c_data.fetchall()
         elif mhcet_percentile:
             c_data.execute("SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
-            colleges += c_data.fetchall()
+            colleges = c_data.fetchall()
             c_data.execute("SELECT DISTINCT branch FROM colleges WHERE percentile <= ? AND seat_type = ?", (mhcet_percentile, category))
-            distinct_branch += c_data.fetchall()
+            distinct_branches = c_data.fetchall()
         else:
             raise ValueError("Both MHCET and JEE percentiles are None.")
     except sqlite3.Error as e:
@@ -164,23 +168,7 @@ def submit_admission():
     finally:
         conn_data.close()
 
-    return render_template('result.html', colleges=colleges, distinct_branch=distinct_branch)
-
-
-
-@app.route('/filter', methods=['POST'])
-def filter_colleges():
-    selected_branches = request.form.getlist('branch')  # Get the selected branches as a list
-    
-    # Call submit_admission() to get the colleges list
-    colleges = submit_admission()
-
-    # Filter colleges based on selected branches
-    filtered_colleges = [college for college in colleges if college['branch'] in selected_branches]
-    
-    distinct_branches = set(college['branch'] for college in colleges)
-
-    return render_template('result.html', colleges=filtered_colleges, distinct_branches=distinct_branches)  
+    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches)
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

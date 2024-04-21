@@ -5,35 +5,49 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Admission Result</h1>
-    <h2>Filter by Branch</h2>
-    <form action="/filter" method="post">
-        <label>Filter by Branch:</label>
-        <br>
-        {% for branch in distinct_branches %}
-        <input type="checkbox" id="{{ branch }}" name="branch" value="{{ branch }}">
-        <label for="{{ branch }}">{{ branch }}</label>
-        <br>
-        {% endfor %}
-        <input type="submit" value="Apply Filter">
-    </form>
-    <h2>Colleges and Branches</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>College Name</th>
-                <th>Branch</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for college in colleges %}   
-            <tr>
-                <td>{{ college[0] }}</td>
-                <td>{{ college[1] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Admission Result</h1>
+    </div>
+    <div class="filter-container">
+        <h2>Filter by</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Branch</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for branch_tuple in distinct_branches %}
+                <tr>
+                    <td>
+                        <input type="checkbox" id="{{ branch_tuple[0] }}" name="branch" value="{{ branch_tuple[0] }}">
+                        <label for="{{ branch_tuple[0] }}">{{ branch_tuple[0] }}</label>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <h2>Colleges and Branches</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>College Name</th>
+                    <th>Branch</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for college in colleges %}   
+                <tr>
+                    <td>{{ college[0] }}</td>
+                    <td>{{ college[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
 

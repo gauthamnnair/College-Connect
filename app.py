@@ -114,7 +114,7 @@ def submit_admission():
     mhcet_percentile = request.form.get('mhcet_percentile')
     jee_percentile = request.form.get('jee_percentile')
     category = request.form.get('category')
-    category += 'S' 
+    category += 'S'
 
     # Insert form data into the admissions table
     conn = sqlite3.connect('admissions.db')
@@ -122,49 +122,35 @@ def submit_admission():
     c.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
               (mhcet_percentile, jee_percentile, category))
     conn.commit()
+
+    # Query colleges from the database based on user input
+    c.execute("SELECT college_name, branch FROM data WHERE min <= ? AND seat_type = ?", (mhcet_percentile, category))
+    colleges = c.fetchall()
+
+    if jee_percentile:
+        c.execute("SELECT college_name, branch FROM data WHERE min <= ? AND seat_type = ?", (jee_percentile, category))
+        colleges += c.fetchall()
+
     conn.close()
 
-    # Extract colleges based on user input
-    if mhcet_percentile and jee_percentile:
-        colleges = extract_colleges_mhcet('data.csv', float(mhcet_percentile), category)
-        colleges.extend(extract_colleges_mhcet('data.csv', float(jee_percentile), category))
-    elif mhcet_percentile:
-        colleges = extract_colleges_mhcet('data.csv', float(mhcet_percentile), category)
-    elif jee_percentile:
-        colleges = extract_colleges_mhcet('data.csv', float(jee_percentile), category)
-    else:
-        # No percentiles provided
-        return "Please provide MHCET or JEE percentile."
-
     # Render the result template with the extracted colleges and branches
-    return render_template('result.html', colleges=colleges)
+    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches)
 
-# Function to extract colleges based on user input
-def extract_colleges_mhcet(csv_file, mhcet_percentile, category):
-    colleges = []
-    with open(csv_file, 'r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if float(row['min']) <= mhcet_percentile and row['seat_type'] == category:
-                college = {
-                    'college_name': row['college_name'],
-                    'branch': row['branch']
-                }
-                colleges.append(college)
-    return colleges
 
-def extract_colleges_jee(csv_file, jee_percentile, category):
-    colleges = []
-    with open(csv_file, 'r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if float(row['min']) <= jee_percentile and row['seat_type'] == 'AI':
-                college = {
-                    'college_name': row['college_name'],
-                    'branch': row['branch']
-                }
-                colleges.append(college)
-    return colleges
+@app.route('/filter', methods=['POST'])
+def filter_colleges():
+    selected_branches = request.form.getlist('branch')  # Get the selected branches as a list
+    
+    # Call submit_admission() to get the colleges list
+    colleges = submit_admission()
+
+    # Filter colleges based on selected branches
+    filtered_colleges = [college for college in colleges if college['branch'] in selected_branches]
+    
+    distinct_branches = set(college['branch'] for college in colleges)
+
+    return render_template('result.html', colleges=filtered_colleges, distinct_branches=distinct_branches)
+
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

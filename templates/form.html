@@ -10,56 +10,92 @@
     <div class="container">
         <h2>Admission Form</h2>
     </div>
-    <form action="/submit" method="POST">
+    <form action="/submit" method="POST" onsubmit="return validateForm()">
         <label for="mhcet_percentile">MHCET Percentile:</label>
-        <input type="number" id="mhcet_percentile" name="mhcet_percentile" step="0.01" min="0" max="100" required><br><br>
+        <input type="text" id="mhcet_percentile" name="mhcet_percentile" oninput="validateNumericInput(this, 'mhcet_error_message')">
+        <span id="mhcet_error_message" class="error-message"></span><br><br>
         
         <label for="jee_percentile">JEE Percentile:</label>
-        <input type="number" id="jee_percentile" name="jee_percentile" step="0.01" min="0" max="100" required><br><br>
+        <input type="text" id="jee_percentile" name="jee_percentile" oninput="validateNumericInput(this, 'jee_error_message')">
+        <span id="jee_error_message" class="error-message"></span><br><br>
         
         <label for="category">Category:</label>
         <select id="category" name="category" required>
-        <option value="DEFOPEN">DEFOPEN</option>
-        <option value="DEFROBC">DEFROBC</option>
-        <option value="DEFRNT1">DEFRNT1</option>
-        <option value="EWS">EWS</option>
-        <option value="GNT1">GNT1</option>
-        <option value="GNT2">GNT2</option>
-        <option value="GNT3">GNT3</option>
-        <option value="GOBC">GOBC</option>
-        <option value="GOPEN">GOPEN</option>
-        <option value="GST">GST</option>
-        <option value="GSC">GSC</option>
-        <option value="GVJ">GVJ</option>
-        <option value="LOBC">LOBC</option>
-        <option value="LOPEN">LOPEN</option>
-        <option value="LNT1">LNT1</option>
-        <option value="LNT2">LNT2</option>
-        <option value="LVJ">LVJ</option>
-        <option value="LSC">LSC</option>
-        <option value="LST">LST</option>
-        <option value="ORPHAN">ORPHAN</option>
-        <option value="PWDOPEN">PWDOPEN</option>
-        <option value="PWDOBC">PWDOBC</option>
-        <option value="PWDROBC">PWDROBC</option>
-        <option value="PWDRSC">PWDRSC</option>
-        <option value="TFWS">TFWS</option>
-        <option value="AI">AI</option>        
-</select>
-
-            
-        
-        <label for="branch_preference">Branch Preference:</label>
-        <input type="text" id="branch_preference" name="branch_preference" required><br><br>
-        
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" required><br><br>
-        
-        <label for="hostel_preference">Hostel/Day Preference:</label>
-        <input type="text" id="hostel_preference" name="hostel_preference" required><br><br>
-        
+            <option value="DEFOPEN">DEFOPEN</option>
+            <option value="DEFROBC">DEFROBC</option>
+            <option value="DEFRNT1">DEFRNT1</option>
+            <option value="EWS">EWS</option>
+            <option value="GNT1">GNT1</option>
+            <option value="GNT2">GNT2</option>
+            <option value="GNT3">GNT3</option>
+            <option value="GOBC">GOBC</option>
+            <option value="GOPEN">GOPEN</option>
+            <option value="GST">GST</option>
+            <option value="GSC">GSC</option>
+            <option value="GVJ">GVJ</option>
+            <option value="LOBC">LOBC</option>
+            <option value="LOPEN">LOPEN</option>
+            <option value="LNT1">LNT1</option>
+            <option value="LNT2">LNT2</option>
+            <option value="LVJ">LVJ</option>
+            <option value="LSC">LSC</option>
+            <option value="LST">LST</option>
+            <option value="ORPHAN">ORPHAN</option>
+            <option value="PWDOPEN">PWDOPEN</option>
+            <option value="PWDOBC">PWDOBC</option>
+            <option value="PWDROBC">PWDROBC</option>
+            <option value="PWDRSC">PWDRSC</option>
+            <option value="TFWS">TFWS</option>
+            <option value="AI">AI</option>
+        </select><br><br>        
         <input type="submit" value="Submit">
     </form>
+    <script>
+        function validateNumericInput(input, errorMessageId) {
+            var value = input.value.trim();
+            if (value === "") {
+                document.getElementById(errorMessageId).textContent = ""; // Clear error message
+                return true; // Empty value is valid
+            }
+            // Check for invalid characters
+            if (!/^\d*\.?\d*$/.test(value)) {
+                document.getElementById(errorMessageId).textContent = "Please enter a valid number.";
+                return false; // Return false to prevent form submission
+            }
+            // Check if the number is less than 0 or greater than 100
+            var numericValue = parseFloat(value);
+            var numericValue = parseFloat(value);
+            if (numericValue < 0 || numericValue > 100) {
+                document.getElementById(errorMessageId).textContent = "Please enter a number between 0 and 100.";
+                return false; // Return false to prevent form submission
+            }
+        // Clear error message if valid
+            document.getElementById(errorMessageId).textContent = "";
+            return true; // Allow further editing
+        }
+
+        function validateForm() {
+            var mhcetInput = document.getElementById("mhcet_percentile");
+            var jeeInput = document.getElementById("jee_percentile");
+            var mhcetValue = mhcetInput.value.trim();
+            var jeeValue = jeeInput.value.trim();
+
+            if (mhcetValue === "" && jeeValue === "") {
+                document.getElementById("mhcet_error_message").textContent = "Please enter at least one of MHCET or JEE Percentile.";
+                document.getElementById("jee_error_message").textContent = ""; // Clear JEE error message
+                return false;
+            } else {
+                var mhcetValid = validateNumericInput(mhcetInput, "mhcet_error_message");
+                var jeeValid = validateNumericInput(jeeInput, "jee_error_message");
+
+                if (mhcetValid && jeeValid) {
+                    return true; // Submit the form
+                } else {
+                    return false; // Prevent form submission
+                }
+            }
+        }
+    </script>
 </body>
 </html>
 

@@ -12,7 +12,8 @@ form {
 input[type="text"],
 input[type="password"],
 input[type="email"],
-input[type="submit"] {
+input[type="submit"],
+input[type="number"] {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
@@ -61,20 +62,15 @@ select {
 }
 
 /* MHCET percentile input style */
-input[type="number"] {
-    width: calc(100%); /* Adjusted width to account for custom arrow */
-    padding: 10px;
-    margin: 5px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8em;
 }
 
 /* Additional styles specific to the login and signup forms can be added here if needed */

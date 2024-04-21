@@ -87,16 +87,14 @@ def index(username):
 
 # Function to create the database table if it doesn't exist
 def create_admissions_table():
-    conn = sqlite3.connect('admissions.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS admissions
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 mhcet_percentile FLOAT NOT NULL,
-                 jee_percentile FLOAT NOT NULL,
-                 category TEXT NOT NULL,
-                 branch_preference TEXT NOT NULL,
-                 location TEXT NOT NULL,
-                 hostel_preference TEXT NOT NULL)''')
+    # Using a context manager to handle database connection
+    with sqlite3.connect('admissions.db') as conn:
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS admissions
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     mhcet_percentile FLOAT NOT NULL,
+                     jee_percentile FLOAT NOT NULL,
+                     category TEXT NOT NULL)''')
     conn.commit()
     conn.close()
 
@@ -113,15 +111,12 @@ def submit_admission():
     mhcet_percentile = request.form['mhcet_percentile']
     jee_percentile = request.form['jee_percentile']
     category = request.form['category']
-    branch_preference = request.form['branch_preference']
-    location = request.form['location']
-    hostel_preference = request.form['hostel_preference']
 
     # Insert form data into the database
     conn = sqlite3.connect('admissions.db')
     c = conn.cursor()
-    c.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category, branch_preference, location, hostel_preference) VALUES (?, ?, ?, ?, ?, ?)",
-              (mhcet_percentile, jee_percentile, category, branch_preference, location, hostel_preference))
+    c.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
+              (mhcet_percentile, jee_percentile, category))
     conn.commit()
     conn.close()
 

@@ -61,7 +61,24 @@
         }
         .content {
             margin-top: 100px; /* Shift content down by 100px */
+            text-align: left;
+            padding-left: 650px;        
         }
+        input[type="submit"],
+        .get-started-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .get-started-btn:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
@@ -82,8 +99,7 @@
         <h1>Welcome to CollegeAdvisor!</h1>
         <p>CollegeAdvisor helps you decide which college to choose based on your MH CET or JEE percentile.</p>
         <p>Enter your exam scores and preferences to get personalized recommendations.</p>
-        <!-- Button to go to the form page -->
-        <a href="/admission"><button class="btn">Get Started</button></a>
+        <a href="/admission" class="get-started-btn">Get Started</a>
         <!-- You can add more content here, such as a form to input scores -->
     {% endblock %}
 </div>

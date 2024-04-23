@@ -2,6 +2,13 @@
 
 body {
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
 }
 
 form {
@@ -36,6 +43,35 @@ input[type="submit"]:hover {
 
 .container {
     text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+}
+
+.tables-container {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.filter-table {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 20%;
+}
+
+.colleges-table {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
 }
 
 .input-container {
@@ -45,7 +81,7 @@ input[type="submit"]:hover {
 
 .forgot-password {
     float: right;
-     font-size: 0.8em;
+    font-size: 0.8em;
 }
 
 /* Dropdown style */
@@ -87,21 +123,19 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-left: 20px; /* Adjust the margin as needed */
 }
 
-/* Style for table */
 table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
 th, td {
-    border: 1px solid #dddddd;
+    padding: 10px;
     text-align: left;
-    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
     background-color: #f2f2f2;
 }
-
-/* Additional styles specific to the login and signup forms can be added here if needed */
 

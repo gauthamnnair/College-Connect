@@ -7,49 +7,51 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
+    <div class=container>
         <h2>Admission Form</h2>
     </div>
-    <form action="/submit" method="POST" onsubmit="return validateForm()">
-        <label for="mhcet_percentile">MHCET Percentile:</label>
-        <input type="text" id="mhcet_percentile" name="mhcet_percentile" oninput="validateNumericInput(this, 'mhcet_error_message')">
-        <span id="mhcet_error_message" class="error-message"></span><br><br>
-        
-        <label for="jee_percentile">JEE Percentile:</label>
-        <input type="text" id="jee_percentile" name="jee_percentile" oninput="validateNumericInput(this, 'jee_error_message')">
-        <span id="jee_error_message" class="error-message"></span><br><br>
-        
-        <label for="category">Category:</label>
-        <select id="category" name="category" required>
-            <option value="DEFOPEN">DEFOPEN</option>
-            <option value="DEFROBC">DEFROBC</option>
-            <option value="DEFRNT1">DEFRNT1</option>
-            <option value="EWS">EWS</option>
-            <option value="GNT1">GNT1</option>
-            <option value="GNT2">GNT2</option>
-            <option value="GNT3">GNT3</option>
-            <option value="GOBC">GOBC</option>
-            <option value="GOPEN">GOPEN</option>
-            <option value="GST">GST</option>
-            <option value="GSC">GSC</option>
-            <option value="GVJ">GVJ</option>
-            <option value="LOBC">LOBC</option>
-            <option value="LOPEN">LOPEN</option>
-            <option value="LNT1">LNT1</option>
-            <option value="LNT2">LNT2</option>
-            <option value="LVJ">LVJ</option>
-            <option value="LSC">LSC</option>
-            <option value="LST">LST</option>
-            <option value="ORPHAN">ORPHAN</option>
-            <option value="PWDOPEN">PWDOPEN</option>
-            <option value="PWDOBC">PWDOBC</option>
-            <option value="PWDROBC">PWDROBC</option>
-            <option value="PWDRSC">PWDRSC</option>
-            <option value="TFWS">TFWS</option>
-            <option value="AI">AI</option>
-        </select><br><br>        
-        <input type="submit" value="Submit">
-    </form>
+    <div class=form-container>
+        <form action="/submit" method="POST" onsubmit="return validateForm()">
+            <label for="mhcet_percentile">MHCET Percentile: </label>
+            <input type="text" id="mhcet_percentile" name="mhcet_percentile" oninput="validateNumericInput(this, 'mhcet_error_message')">
+            <span id="mhcet_error_message" class="error-message"></span><br><br>
+            
+            <label for="jee_percentile">JEE Percentile:</label>
+            <input type="text" id="jee_percentile" name="jee_percentile" oninput="validateNumericInput(this, 'jee_error_message')">
+            <span id="jee_error_message" class="error-message"></span><br><br>
+            
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+                <option value="DEFOPEN">DEFOPEN</option>
+                <option value="DEFROBC">DEFROBC</option>
+                <option value="DEFRNT1">DEFRNT1</option>
+                <option value="EWS">EWS</option>
+                <option value="GNT1">GNT1</option>
+                <option value="GNT2">GNT2</option>
+                <option value="GNT3">GNT3</option>
+                <option value="GOBC">GOBC</option>
+                <option value="GOPEN">GOPEN</option>
+                <option value="GST">GST</option>
+                <option value="GSC">GSC</option>
+                <option value="GVJ">GVJ</option>
+                <option value="LOBC">LOBC</option>
+                <option value="LOPEN">LOPEN</option>
+                <option value="LNT1">LNT1</option>
+                <option value="LNT2">LNT2</option>
+                <option value="LVJ">LVJ</option>
+                <option value="LSC">LSC</option>
+                <option value="LST">LST</option>
+                <option value="ORPHAN">ORPHAN</option>
+                <option value="PWDOPEN">PWDOPEN</option>
+                <option value="PWDOBC">PWDOBC</option>
+                <option value="PWDROBC">PWDROBC</option>
+                <option value="PWDRSC">PWDRSC</option>
+                <option value="TFWS">TFWS</option>
+                <option value="AI">AI</option>
+            </select><br><br>        
+            <input type="submit" value="Submit">
+        </form>
+    </div>
     <script>
         function validateNumericInput(input, errorMessageId) {
             var value = input.value.trim();

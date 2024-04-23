@@ -1,21 +1,11 @@
 /* styles.css */
-
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f7f7f7;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
 }
-
 form {
     max-width: 300px;
     margin: 0 auto;
 }
-
 input[type="text"],
 input[type="password"],
 input[type="email"],
@@ -29,61 +19,26 @@ input[type="number"] {
     border-radius: 4px;
     box-sizing: border-box;
 }
-
 input[type="submit"] {
     background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
 }
-
 input[type="submit"]:hover {
     background-color: #45a049;
 }
-
 .container {
     text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    width: 100%;
 }
-
-.tables-container {
-    display: flex;
-    width: 100%;
-    margin-top: 20px;
-    padding: 20px;
-}
-
-.filter-table {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 20%;
-}
-
-.colleges-table {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-}
-
-input[type="checkbox"] {
-    margin-right: 5px;
-}
-
 .input-container {
     text-align: left;
     margin-bottom: 10px;
 }
-
 .forgot-password {
     float: right;
-    font-size: 0.8em;
+     font-size: 0.8em;
 }
-
 /* Dropdown style */
 select {
     width: 100%;
@@ -96,46 +51,26 @@ select {
     appearance: none; /* Remove default arrow */
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333" width="24px" height="24px"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>') no-repeat right 10px center/12px 12px; /* Custom arrow */
 }
-
 /* MHCET percentile input style */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-
 .error-message {
     color: red;
     font-size: 0.8em;
 }
 
-/* Style for filter container */
-.filter-container {
-    float: left;
-    width: 20%;
-    margin-right: 20px; /* Adjust the margin as needed */
-}
-
-/* Style for table container */
-.table-container {
-    float: right;
-    width: 77%; /* Adjust the width as needed */
-    margin-left: 20px; /* Adjust the margin as needed */
-}
-
 table {
-    width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    width: 100%;
 }
-
 th, td {
-    padding: 10px;
+    border: 1px solid #dddddd;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    padding: 8px;
 }
-
 th {
     background-color: #f2f2f2;
 }
-

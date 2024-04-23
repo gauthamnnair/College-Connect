@@ -5,6 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Search Results</title>
+    <style>
+        .container{
+            text-align: left;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .tables-container {
+            display: flex;
+            width: 100%;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .filter-table {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 20%;
+        }
+
+        .colleges-table {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 80%;
+        }
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+    </style>
 </head>
 <body>
     <div class="tables-container">
@@ -27,8 +61,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>College Name</th>
-                        <th>Branch</th>
+                        <th style="width: 70%;">College Name</th>
+                        <th style="width: 30%;">Branch</th>
                     </tr>
                 </thead>
                 <tbody>

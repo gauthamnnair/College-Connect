@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-import csv
 import os
+import json
 
 app = Flask(__name__)
 
@@ -113,21 +113,23 @@ def submit_admission():
     mhcet_percentile = request.form.get('mhcet_percentile')
     jee_percentile = request.form.get('jee_percentile')
     category = request.form.get('category') + 'S'  # Assuming category is concatenated with 'S'
+    selected_branches_json = request.form.get('selectedBranches')
+    selected_branches = json.loads(selected_branches_json) if selected_branches_json else []
 
-    # Insert form data into the admissions table
-    try:
-        conn_admissions = sqlite3.connect('admissions.db')
-        c_admissions = conn_admissions.cursor()
-        c_admissions.execute("INSERT INTO admissions (mhcet_percentile, jee_percentile, category) VALUES (?, ?, ?)",
-                             (mhcet_percentile, jee_percentile, category))
-        conn_admissions.commit()
-    except sqlite3.Error as e:
-        print("Error inserting data into admissions table:", e)
-    finally:
-        conn_admissions.close()
+    colleges, distinct_branches = filter_colleges(mhcet_percentile, jee_percentile, category, selected_branches)
+
+    # Pass mhcet_percentile and jee_percentile to the result.html template
+    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches, mhcet_percentile=mhcet_percentile, jee_percentile=jee_percentile, category=category)
+
+def filter_colleges(mhcet_percentile, jee_percentile, category, selected_branches):
+    branch_query = ""
+    colleges, distinct_branches = fetch(mhcet_percentile, jee_percentile, category, branch_query)
+    print("College:", colleges)
+    return colleges, distinct_branches        
+
+def fetch(mhcet_percentile, jee_percentile, category, branch_query):
     mhcet_query = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = ?"
-    jee_query = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'"
-    # Query colleges from the data database based on user input
+    jee_query = "SELECT college_name, branch FROM colleges WHERE percentile <= ? AND seat_type = 'AI'"    
     colleges = []
     distinct_branches = []
     try:
@@ -140,7 +142,7 @@ def submit_admission():
             distinct_branches = c_data.fetchall()
             c_data.execute(jee_query, (jee_percentile,))
             colleges.extend(c_data.fetchall())
-            c_data.execute("SELECT DISTINCT branch FROM (" +jee_query+ ")", (jee_percentile,))
+            c_data.execute("SELECT DISTINCT branch FROM (" +jee_query+ ")" (jee_percentile,))
             distinct_branches.extend(c_data.fetchall())
         elif jee_percentile:
             c_data.execute(jee_query, (jee_percentile,))
@@ -157,9 +159,8 @@ def submit_admission():
     except sqlite3.Error as e:
         print("Error querying database:", e)
     finally:
-        conn_data.close()
-
-    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches)
+        conn_data.close()        
+    return colleges, distinct_branches
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

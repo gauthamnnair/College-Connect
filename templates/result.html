@@ -61,15 +61,19 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 70%;">College Name</th>
-                        <th style="width: 30%;">Branch</th>
+                        <th style="width: 60%;">College Name</th>
+                        <th style="width: 20%;">Branch</th>
+                        <th style="width: 15%;">Percentile</th>
+                        <th style="width: 5%;">Exam</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for college in colleges %}
                         <tr>
-                            <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td>
-                            <td>{{ college[1] }}</td>
+                            <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td> <!-- College Name -->
+                            <td>{{ college[1] }}</td> <!-- Branch -->
+                            <td>{{ college[2] }}</td> <!-- Percentile -->
+                            <td>{{ college[3] }}</td> <!-- Exam Type -->
                         </tr>
                     {% endfor %}
                 </tbody>

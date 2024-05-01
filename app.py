@@ -113,8 +113,8 @@ def submit_admission():
 
 # Function to fetch colleges from the database
 def filter_colleges(mhcet_percentile, jee_percentile, category):
-    mhcet_query = "SELECT college_name, branch, percentile, 'MHCET' FROM colleges WHERE percentile <= ? AND seat_type = ?"
-    jee_query = "SELECT college_name, branch, percentile, 'JEE' FROM colleges WHERE percentile <= ? AND seat_type = 'AI'"    
+    mhcet_query = "SELECT college_name, branch, percentile, 'MHCET' FROM colleges WHERE percentile <= ? AND seat_type = ? LIMIT 50"
+    jee_query = "SELECT college_name, branch, percentile, 'JEE' FROM colleges WHERE percentile <= ? AND seat_type = 'AI' LIMIT 50"    
     colleges = []
     distinct_branches = []
     try:
@@ -123,17 +123,24 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
             if jee_percentile:
                 c_data.execute(jee_query, (jee_percentile,))
                 colleges += c_data.fetchall()
-                c_data.execute("SELECT DISTINCT branch FROM (" + jee_query + ")", (jee_percentile,))
-                distinct_branches += c_data.fetchall()
 
             if mhcet_percentile:
                 c_data.execute(mhcet_query, (mhcet_percentile, category))
                 colleges += c_data.fetchall()
-                c_data.execute("SELECT DISTINCT branch FROM (" + mhcet_query + ")", (mhcet_percentile, category))
-                distinct_branches += c_data.fetchall()
 
             if mhcet_percentile is None and jee_percentile is None:
                 raise ValueError("Both MHCET and JEE percentiles are None.")
+            
+            colleges.sort(key=lambda x: x[2] if x[2] else float('-inf'), reverse=True)  # Sorting based on percentile
+
+            # Limit colleges to top 50
+            colleges = colleges[:50]
+            
+            #Extracting distint colleges
+            for college in colleges:
+                if college[1] not in distinct_branches:
+                    distinct_branches.append(college[1])
+
     except sqlite3.Error as e:
         print("Error querying database:", e)
     return colleges, distinct_branches

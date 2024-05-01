@@ -35,9 +35,9 @@
             width: 80%;
         }
 
-input[type="checkbox"] {
-    margin-right: 5px;
-}
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -68,7 +68,7 @@ input[type="checkbox"] {
                 <tbody>
                     {% for college in colleges %}
                         <tr>
-                            <td>{{ college[0] }}</td>
+                            <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td>
                             <td>{{ college[1] }}</td>
                         </tr>
                     {% endfor %}

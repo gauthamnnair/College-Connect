@@ -107,7 +107,7 @@ def submit_admission():
     colleges, distinct_branches = filter_colleges(mhcet_percentile, jee_percentile, category)
 
     # Pass data to the result.html template
-    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches, mhcet_percentile=mhcet_percentile, jee_percentile=jee_percentile, category=category)
+    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches, mhcet_percentile=mhcet_percentile, jee_percentile=jee_percentile, category=category, get_college_website=get_college_website)
 
 # Function to fetch colleges from the database
 def filter_colleges(mhcet_percentile, jee_percentile, category):
@@ -136,6 +136,16 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
     except sqlite3.Error as e:
         print("Error querying database:", e)
     return colleges, distinct_branches
+
+def get_college_website(college_name):
+    with sqlite3.connect('data.db') as conn_details:
+        c_details = conn_details.cursor()
+        c_details.execute("SELECT website_link FROM details WHERE college_name=?", (college_name,))
+        website_link = c_details.fetchone()
+        if website_link:
+            return website_link[0]
+        else:
+            return "#"
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

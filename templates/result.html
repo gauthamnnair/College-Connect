@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Search Results</title>
     <style>
-        .container{
+        .container {
             text-align: left;
             padding: 20px;
             background-color: #fff;
@@ -18,29 +18,62 @@
             display: flex;
             width: 100%;
             margin-top: 20px;
-            padding: 20px;
         }
 
         .filter-table {
             background-color: #fff;
-            padding: 20px;
             border-radius: 8px;
             width: 20%;
         }
 
         .colleges-table {
             background-color: #fff;
-            padding: 30px;
             border-radius: 8px;
             width: 80%;
+            padding: 20px;
+        }
+
+        .download-button {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: fixed;
+            top: 50px;
+            right: 20px;
         }
 
         input[type="checkbox"] {
             margin-right: 5px;
         }
+
+        @media print {
+            .filter-table {
+                display: none; /* Hide filter table */
+            }
+            .download-button {
+                display: none; /* Hide download button */
+            }
+        }
+        table {
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 2px solid #000; /* Increased border thickness */
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
+    
     <div class="tables-container">
         <div class="filter-table">
             <h2>Filter by Branch</h2>
@@ -49,7 +82,7 @@
                     <legend>Select Branches</legend>
                     {% for branch in distinct_branches %}
                         <label>
-                            <input type="checkbox" name="branch" value="{{ branch[0] }}">
+                            <input type="checkbox" name="branch" value="{{ branch }}">
                             {{ branch }}
                         </label><br>
                     {% endfor %}
@@ -58,29 +91,29 @@
         </div>
         <div class="colleges-table">
             <h2>Colleges</h2>
-            <table>
+            <table id="collegesTable">
                 <thead>
                     <tr>
-                        <th style="width: 60%;">College Name</th>
+                        <th style="width: 65%;">College Name</th>
                         <th style="width: 20%;">Branch</th>
-                        <th style="width: 15%;">Percentile</th>
+                        <th style="width: 10%;">Percentile</th>
                         <th style="width: 5%;">Exam</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for college in colleges %}
                         <tr>
-                            <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td> <!-- College Name -->
-                            <td>{{ college[1] }}</td> <!-- Branch -->
-                            <td>{{ college[2] }}</td> <!-- Percentile -->
-                            <td>{{ college[3] }}</td> <!-- Exam Type -->
+                            <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td>
+                            <td>{{ college[1] }}</td>
+                            <td>{{ college[2] }}</td>
+                            <td>{{ college[3] }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
+    <button class="download-button" onclick="printTable()">Print Table as PDF</button>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const branchCheckboxes = document.querySelectorAll('input[name="branch"]');
@@ -112,7 +145,39 @@
                 }
             }
         });
+
+         function printTable() {
+            // Hide columns: "Percentile" and "Exam"
+            const columnsToHide = [2, 3]; // Indexes of columns to hide (0-based)
+            const tableHeadings = document.querySelectorAll('.colleges-table table th');
+            columnsToHide.forEach(function(index) {
+                tableHeadings[index].style.display = 'none';
+            });
+
+            // Hide the respective columns in each row
+            const collegeRows = document.querySelectorAll('.colleges-table table tbody tr');
+            collegeRows.forEach(function(row) {
+                const cells = row.querySelectorAll('td');
+                columnsToHide.forEach(function(index) {
+                    cells[index].style.display = 'none';
+                });
+            });
+
+            // This will trigger the print dialog
+            window.print();
+
+            // Restore hidden columns and table headings after printing
+            tableHeadings.forEach(function(heading, index) {
+                heading.style.display = ''; // Restore default display
+            });
+            collegeRows.forEach(function(row) {
+                const cells = row.querySelectorAll('td');
+                columnsToHide.forEach(function(index) {
+                    cells[index].style.display = ''; // Restore default display
+                });
+            });
+        }
     </script>
 </body>
 </html>
-
+    

@@ -1,4 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, make_response
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
 import sqlite3
 
 app = Flask(__name__)
@@ -100,8 +103,6 @@ def admission_form():
 
 # Handle admission form submission
 @app.route('/submit', methods=['POST'])
-# Handle admission form submission
-@app.route('/submit', methods=['POST'])
 def submit_admission():
     mhcet_percentile = request.form.get('mhcet_percentile')
     jee_percentile = request.form.get('jee_percentile')
@@ -136,7 +137,7 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
             # Limit colleges to top 50
             colleges = colleges[:50]
             
-            #Extracting distint colleges
+            #Extracting distinct colleges
             for college in colleges:
                 if college[1] not in distinct_branches:
                     distinct_branches.append(college[1])

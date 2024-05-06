@@ -7,9 +7,8 @@ import pyperclip
 def retrieve_distinct_college_names():
     conn = sqlite3.connect('data.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT college_name FROM colleges")
+    cursor.execute("SELECT DISTINCT college_name FROM colleges WHERE college_name NOT IN (SELECT college_name FROM details)")
     college_names = cursor.fetchall()
-    conn.close()
     return college_names
 
 # Function to find the website link for a given college name using PyAutoGUI
@@ -27,7 +26,7 @@ def find_website_link_with_pyautogui(college_name):
 
     # Navigate to the first link using arrow keys
     pyautogui.press('down')  # Move to the first search result
-    pyautogui.press('enter')  # Open the link
+    pyautogui.press('enter')  # Open the link 
     time.sleep(4)  # Wait for the page to load
 
     # Select and copy the URL (Ctrl + L to select the address bar, Ctrl + C to copy)
@@ -48,7 +47,7 @@ def insert_details_into_table(college_name, website_link):
     cursor = conn.cursor()
 
     # Insert college name and website link into the details table
-    cursor.execute("INSERT INTO details (college_name, website_link) VALUES (?, ?), (college_name, website_link))
+    cursor.execute("INSERT INTO details (college_name, website_link) VALUES (?, ?)", (college_name, website_link))
     
     # Commit the transaction
     conn.commit()
@@ -58,6 +57,7 @@ def insert_details_into_table(college_name, website_link):
 
 # Main function
 def main():
+    c = 0
     pyautogui.press('win')  # Press Windows key to open Start menu
     time.sleep(0.5)  # Wait for Start menu to appear
     pyautogui.write('librewolf')  # Type the name of the browser
@@ -80,7 +80,8 @@ def main():
             print(f"Website link for {college_name}: {website_link}")
         else:
             print(f"No website link found for {college_name}")
-
+            c += 1
+    print(c)
 # Entry point
 if __name__ == "__main__":
     main()

@@ -131,8 +131,8 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
             
             colleges.sort(key=lambda x: x[2] if x[2] else float('-inf'), reverse=True)  # Sorting based on percentile
 
-            # Limit colleges to top 50
-            colleges = colleges[:50]
+            # Limit colleges to top 300
+            colleges = colleges[:300]
             
             #Extracting distinct colleges
             for college in colleges:

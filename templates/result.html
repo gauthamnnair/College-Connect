@@ -94,10 +94,11 @@
             <table id="collegesTable">
                 <thead>
                     <tr>
-                        <th style="width: 65%;">College Name</th>
+                        <th style="width: 55%;">College Name</th>
                         <th style="width: 20%;">Branch</th>
                         <th style="width: 10%;">Percentile</th>
                         <th style="width: 5%;">Exam</th>
+                        <th style="width: 10%">Chances</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,6 +108,7 @@
                             <td><a href="{{ get_page_num(college[0], college[1]) }}">{{ college[1] }}</td>
                             <td>{{ college[2] }}</td>
                             <td>{{ college[3] }}</td>
+                            <td></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -146,9 +148,47 @@
             }
         });
 
+        // Function to calculate chances and fill the chances column
+        function calculateChances(jeePercentile, mhcetPercentile) {
+            const collegeRows = document.querySelectorAll('.colleges-table table tbody tr');
+
+            collegeRows.forEach(function(row) {
+                const examType = row.querySelector('td:nth-child(4)').textContent;
+                let userPercentile = 0;
+
+                if (examType === 'JEE') {
+                    userPercentile = jeePercentile;
+                } else if (examType === 'MHCET') {
+                    userPercentile = mhcetPercentile;
+                }
+
+                const collegePercentile = parseFloat(row.querySelector('td:nth-child(3)').textContent);
+                const percentileDifference = Math.abs(userPercentile - collegePercentile);
+                let chance = '';
+
+                if (percentileDifference < 3) {
+                    chance = 'Probable';
+                } else if (percentileDifference < 5) {
+                    chance = 'Fair Chance';
+                } else {
+                    chance = 'Confirm';
+                }
+
+                row.querySelector('td:nth-child(5)').textContent = chance;
+            });
+        }
+
+        // Call the calculateChances function after the document is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Assume you have passed JEE and MHCET percentiles as global variables
+            const jeePercentile = {{ jee_percentile }};
+            const mhcetPercentile = {{ mhcet_percentile }};
+            calculateChances(jeePercentile, mhcetPercentile);
+        });
+
          function printTable() {
             // Hide columns: "Percentile" and "Exam"
-            const columnsToHide = [2, 3]; // Indexes of columns to hide (0-based)
+            const columnsToHide = [2, 3, 4]; // Indexes of columns to hide (0-based)
             const tableHeadings = document.querySelectorAll('.colleges-table table th');
             columnsToHide.forEach(function(index) {
                 tableHeadings[index].style.display = 'none';

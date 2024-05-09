@@ -104,7 +104,7 @@
                     {% for college in colleges %}
                         <tr>
                             <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td>
-                            <td>{{ college[1] }}</td>
+                            <td><a href="{{ get_page_num(college[0], college[1]) }}">{{ college[1] }}</td>
                             <td>{{ college[2] }}</td>
                             <td>{{ college[3] }}</td>
                         </tr>

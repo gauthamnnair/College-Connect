@@ -1,7 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from io import BytesIO
 import sqlite3
 
 app = Flask(__name__)
@@ -110,12 +107,12 @@ def submit_admission():
     colleges, distinct_branches = filter_colleges(mhcet_percentile, jee_percentile, category)
 
     # Pass data to the result.html template
-    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches, mhcet_percentile=mhcet_percentile, jee_percentile=jee_percentile, category=category, get_college_website=get_college_website)
+    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches, mhcet_percentile=mhcet_percentile, jee_percentile=jee_percentile, category=category, get_college_website=get_college_website, get_page_num=get_page_num)
 
 # Function to fetch colleges from the database
 def filter_colleges(mhcet_percentile, jee_percentile, category):
-    mhcet_query = "SELECT college_name, branch, percentile, 'MHCET' FROM colleges WHERE percentile <= ? AND seat_type = ? LIMIT 50"
-    jee_query = "SELECT college_name, branch, percentile, 'JEE' FROM colleges WHERE percentile <= ? AND seat_type = 'AI' LIMIT 50"    
+    mhcet_query = "SELECT college_name, branch, percentile, 'MHCET', page_num FROM colleges WHERE percentile <= ? AND seat_type = ? LIMIT 50"
+    jee_query = "SELECT college_name, branch, percentile, 'JEE', page_num FROM colleges WHERE percentile <= ? AND seat_type = 'AI' LIMIT 50"    
     colleges = []
     distinct_branches = []
     try:
@@ -153,6 +150,16 @@ def get_college_website(college_name):
         website_link = c_details.fetchone()
         if website_link:
             return website_link[0]
+        else:
+            return "#"
+
+def get_page_num(college_name, branch):
+    with sqlite3.connect('data.db') as conn_details:
+        c_details = conn_details.cursor()
+        c_details.execute("SELECT page_num FROM colleges WHERE college_name=? AND branch=?", (college_name,branch))
+        page_nums = c_details.fetchone()
+        if page_nums:
+            return f"https://fe2023.mahacet.org/2022/2022SeatMatrix.pdf#page={page_nums[0]}"
         else:
             return "#"
 

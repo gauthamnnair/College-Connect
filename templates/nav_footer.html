@@ -1,0 +1,18 @@
+<!-- navbar_footer.html -->
+<nav>
+    <ul>
+        <div class="left-group">
+            {% if logged_in %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/signup">Sign Up</a></li>
+                <li><a href="/login">Login</a></li>
+            {% endif %}
+        </div>
+    </ul>
+</nav>
+
+<footer>
+    <p>&copy; 2024 College Connect. All rights reserved.</p>
+</footer>
+

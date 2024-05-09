@@ -7,15 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- Navigation bar -->
-    <nav>
-        <ul>
-            <div class="right-group">
-                <li><a href="/signup">Sign Up</a></li>
-                <li><a href="/login">Login</a></li>
-            </div>
-        </ul>
-    </nav>
+    {% include 'nav_footer.html' %}
     <div class=container>
         <h2>Enter the Percentile</h2>
     </div>
@@ -61,10 +53,6 @@
             <input type="submit" value="Submit">
         </form>
     </div>
-    <!-- Footer -->
-    <footer style="position:fixed">
-        <p>&copy; 2024 College Connect. All rights reserved.</p>
-    </footer>
     <script>
         function validateNumericInput(input, errorMessageId) {
             var value = input.value.trim();

@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
 app = Flask(__name__)
+app.secret_key ='secertkey'
 
 # Function to create the database table if it doesn't exist
 def create_table():
@@ -26,6 +27,14 @@ def create_admissions_table():
 # Create tables on startup
 create_table()
 create_admissions_table()
+
+# Add login check decorator
+def login_required(f):
+    def decorated_function(*args, **kwargs):
+        if 'logged_in' not in session:
+            return redirect('/login')
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Render the home page
 @app.route('/', methods=['GET'])
@@ -65,7 +74,7 @@ def signup():
 
 # Render the login page
 @app.route('/login', methods=['GET'])
-def login_form():
+def login_from():
     return render_template('login.html')
 
 # Handle login form submission
@@ -82,21 +91,25 @@ def login():
         user = c.fetchone()
 
     if user:
-        # Redirect to index page with username if login is successful
+        # Set session variable to indicate user is logged in
+        session['logged_in'] = True
         return redirect('/form')
     else:
-        # Redirect back to login page with an error message
         return redirect('/login')
 
-# Route for the index page with username
-@app.route('/index/<username>')
-def index(username):
-    return f'Welcome, {username}!'
-
-# Render the admission form
+# Render the form
 @app.route('/form', methods=['GET'])
+@login_required
 def admission_form():
-    return render_template('form.html')
+    return render_template('form.html', logged_in='logged_in' in session)
+
+# Handle logout
+@app.route('/logout', methods=['GET'])
+def logout():
+    # Clear the session
+    session.clear()   
+    # Redirect to the index page
+    return redirect('/')
 
 # Handle admission form submission
 @app.route('/list', methods=['POST'])
@@ -115,7 +128,8 @@ def submit_admission():
                             category=category,
                             get_college_website=get_college_website,
                             get_page_num=get_page_num,
-                            chances= chances)
+                            chances= chances,
+                            logged_in='logged_in' in session)
 
 # Function to fetch colleges from the database
 def filter_colleges(mhcet_percentile, jee_percentile, category):

@@ -20,44 +20,6 @@
             margin-top: 20px;
         }
 
-        .filter-table {
-            background-color: #fff;
-            border-radius: 8px;
-            width: 20%;
-            margin-left: 10px;
-            margin-top: 10px;
-        }
-
-        .colleges-table {
-            background-color: #fff;
-            border-radius: 8px;
-            width: 80%;
-            padding: 20px;
-        }
-
-        .download-button {
-            background-color: #66cc66;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-            position: fixed;
-            top: 50px;
-            right: 20px;
-        }
-
-        input[type="checkbox"] {
-            margin-right: 5px;
-        }
-
-        @media print {
-            .filter-table {
-                display: none; /* Hide filter table */
-            }
-            .download-button {
-                display: none; /* Hide download button */
-            }
-        }
         table {
             width: 100%;
         }
@@ -75,20 +37,11 @@
     </style>
 </head>
 <body>
-    
-    <!-- Navigation bar -->
-    <nav>
-        <ul>
-            <div class="right-group">
-                <li><a href="/signup">Sign Up</a></li>
-                <li><a href="/login">Login</a></li>
-            </div>
-        </ul>
-    </nav>
-
+    {% include 'nav_footer.html' %}
     <div class="tables-container">
         <div class="filter-table">
-            <h2>Filter by Branch</h2>
+           <button id="clearFiltersButton">Clear Filter</button>
+            <h2><span style="margin-left:30px;">Filter by Branch</h2>
             <form id="branchFilterForm">
                 <fieldset style="height: 300px; overflow-y: auto;">
                     <legend>Select Branches</legend>
@@ -101,7 +54,7 @@
                 </fieldset>
             </form>
             {% if jee_percentile and mhcet_percentile %}
-            <h2>Filter by Exam</h2>
+            <h2><span style="margin-left:30px;">Filter by Exam</h2>
             <form id="examFilterForm">
                 <fieldset>
                     <legend>Select Exams</legend>
@@ -118,7 +71,7 @@
             {% endif %}
 
             {% if chances|length > 1 %}
-            <h2>Filter by Chances</h2>
+            <h2><span style="margin-left:30px;">Filter by Chances</span></h2>
             <form id="chanceFilterForm">
                 <fieldset>
                     <legend>Select Chances</legend>
@@ -150,7 +103,7 @@
                         <tr>
                             <td>{{ college[6] }}</td>
                             <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td>
-                            <td><a href="{{ get_page_num(college[0], college[1]) }}">{{ college[1] }}</td>
+                            <td><a href="{{ get_page_num(college[0], college[1]) }}">{{ college[1] }}</a></td>
                             <td>{{ college[2] }}</td>
                             <td>{{ college[3] }}</td>
                             <td>{{ college[5] }}</td>
@@ -161,10 +114,7 @@
         </div>
     </div>
     <button class="download-button" onclick="printTable()">Print Table as PDF</button>
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 College Connect. All rights reserved.</p>
-    </footer>
+    <br><br><br>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const branchCheckboxes = document.querySelectorAll('input[name="branch"]');
@@ -182,6 +132,9 @@
             chanceCheckboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', filterColleges);
             });
+
+            // Add event listener for the clear filters button
+            document.getElementById('clearFiltersButton').addEventListener('click', clearFilters);
 
             function filterColleges() {
                 const selectedBranches = Array.from(branchCheckboxes)
@@ -201,11 +154,11 @@
                 collegeRows.forEach(function(row) {
                     const branch = row.querySelector('td:nth-child(3)').textContent;
                     const exam = row.querySelector('td:nth-child(5)').textContent;
-                    const chance = row.querySelector('td:nth-child(6)');
+                    const chance = row.querySelector('td:nth-child(6)').textContent;
 
                     const branchMatch = selectedBranches.length === 0 || selectedBranches.includes(branch);
                     const examMatch = selectedExams.length === 0 || selectedExams.includes(exam);
-                    const chanceMatch = selectedChances.length === 0 || selectedChances.includes(chance.textContent);
+                    const chanceMatch = selectedChances.length === 0 || selectedChances.includes(chance);
 
                     if (branchMatch && examMatch && chanceMatch) {
                         row.style.display = 'table-row';
@@ -213,6 +166,24 @@
                         row.style.display = 'none';
                     }
                 });
+            }
+
+            function clearFilters() {
+                // Clear all checkboxes
+                branchCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = false;
+                });
+
+                examCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = false;
+                });
+
+                chanceCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = false;
+                });
+
+                // Trigger the filter function to update the table
+                filterColleges();
             }
         });
 

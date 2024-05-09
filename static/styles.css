@@ -2,7 +2,17 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0px auto;
+    position: relative;
+    min-height: 100%;
+    box-sizing: inherit;
 }
+
+html{
+    height: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
 form {
     max-width: 300px;
     margin: 0 auto;
@@ -94,7 +104,7 @@ nav ul {
     width: 100%;
 }
 
-nav .right-group {
+nav .left-group {
     display: flex;
     justify-content: flex-end; /* Align items to the right */
     align-items: center; /* Align items vertically */
@@ -116,13 +126,79 @@ nav li a:hover {
     background-color: #111;
 }
 
-/* Footer style */
 footer {
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 10px 0;
-    bottom: 0;
-    width: 100%;
+    width: 99%;
+    position: absolute;
+    right:0;
+    bottom:0;
+    left:0;
+    padding: 10px;
+    margin-top: 40px;
 }
+
+#clearFiltersButton {
+    background-color: #66cc66; /*Light Green color */
+    color: #fff;
+    padding: 10px 20px; /* Padding */
+    border: none; /* No border */
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Cursor style */
+    margin-bottom: -90px;
+    margin-top: -20px;
+    margin-left: 30px;
+}
+
+#clearFiltersButton:hover {
+    background-color: #cc4c3b; /* Darker red color on hover */
+}
+
+.filter-table {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 20%;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.colleges-table {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 80%;
+    padding: 20px;
+}
+
+.download-button {
+    background-color: #66cc66;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 50px;
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    color:white;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+@media print {
+    .filter-table {
+        display: none; /* Hide filter table */
+    }
+    .download-button {
+        display: none; /* Hide download button */
+    }
+    nav {
+        display: none; /* Hide navigation bar */
+    }
+    #clearFiltersButton {
+        display: none; /* Hide Clear Filter Button */
+    }
+}
+
 

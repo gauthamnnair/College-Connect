@@ -7,35 +7,20 @@
     <link rel="stylesheet" href="static\styles.css">
 </head>
 <body>
+{% include 'nav_footer.html' %}
 
-<!-- Navigation bar -->
-<nav>
-    <ul>
-        <div class="right-group">
-            <li><a href="/signup">Sign Up</a></li>
-            <li><a href="/login">Login</a></li>
-        </div>
-    </ul>
-</nav>
+    <!-- Content area -->
+    <div style="text-align: left; margin: 0 auto; width: fit-content;">
+        {% block content %}
+            <h1>Welcome to College Connect!</h1>
+            <p>College Connect helps you decide which college to choose based on your MH CET or JEE percentile.</p>
+            <p>Enter your exam scores and preferences to get personalized recommendations.</p>
+            <a href="/form">
+                <input type="submit" value="Get Started" style="width:100px;">
+            </a>
 
-<!-- Content area -->
-<div style="text-align: left; margin: 0 auto; width: fit-content;">
-    {% block content %}
-        <h1>Welcome to College Connect!</h1>
-        <p>College Connect helps you decide which college to choose based on your MH CET or JEE percentile.</p>
-        <p>Enter your exam scores and preferences to get personalized recommendations.</p>
-        <a href="/form">
-            <input type="submit" value="Get Started" style="width:100px;">
-        </a>
-
-    {% endblock %}
-</div>
-
-<!-- Footer -->
-<footer style="position:fixed;">
-    <p>&copy; 2024 College Connect. All rights reserved.</p>
-</footer>
-
+        {% endblock %}
+    </div>
 </body>
 </html>
 

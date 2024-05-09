@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admission Form</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="static/styles.css">
 </head>
 <body>
     {% include 'nav_footer.html' %}
@@ -21,6 +21,7 @@
             <input type="text" id="jee_percentile" name="jee_percentile" oninput="validateNumericInput(this, 'jee_error_message')">
             <span id="jee_error_message" class="error-message"></span><br><br>
             
+            <a href="/category" class="forgot-password">Find Category</a>
             <label for="category">Category:</label>
             <select id="category" name="category" required>
                 <option value="DEFOPEN">DEFOPEN</option>

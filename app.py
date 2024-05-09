@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 import sqlite3
 import hashlib
 
@@ -65,7 +65,10 @@ def signup():
 def login_from():
     return render_template('login.html')
 
-# Handle login form submission
+@app.route('/category', methods=['GET'])
+def category_list():
+    return render_template('category.html')
+
 @app.route('/login', methods=['POST'])
 def login():
     # Extract form data
@@ -76,14 +79,20 @@ def login():
     # Authenticate user
     with sqlite3.connect('users.db') as conn:
         c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, hashed_password))
+        c.execute("SELECT * FROM users WHERE username=?", (username,))
         user = c.fetchone()
 
     if user:
-        # Set session variable to indicate user is logged in
-        session['logged_in'] = True
-        return redirect('/form')
+        # Check if password matches
+        if user[3] == hashed_password:
+            # Set session variable to indicate user is logged in
+            session['logged_in'] = True
+            return redirect('/form')
+        else:
+            flash('Incorrect password. Please try again.', 'error')
+            return redirect('/login')
     else:
+        flash('Username does not exist. Please sign up.', 'error')
         return redirect('/login')
 
 # Render the form

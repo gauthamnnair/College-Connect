@@ -88,6 +88,38 @@
                     {% endfor %}
                 </fieldset>
             </form>
+            <h2>Filter by Exam</h2>
+            <form id="examFilterForm">
+                <fieldset>
+                    <legend>Select Exams</legend>
+                    <label>
+                        <input type="checkbox" name="exam" value="JEE">
+                        JEE
+                    </label><br>
+                    <label>
+                        <input type="checkbox" name="exam" value="MHCET">
+                        MHCET
+                    </label><br>
+                </fieldset>
+            </form>
+            <h2>Filter by Chances</h2>
+            <form id="chanceFilterForm">
+                <fieldset>
+                    <legend>Select Chances</legend>
+                    <label>
+                        <input type="checkbox" name="chance" value="Probable">
+                        Probable
+                    </label><br>
+                    <label>
+                        <input type="checkbox" name="chance" value="Fair Chance">
+                        Fair Chance
+                    </label><br>
+                    <label>
+                        <input type="checkbox" name="chance" value="Confirm">
+                        Confirm
+                    </label><br>
+                </fieldset>
+            </form>
         </div>
         <div class="colleges-table">
             <h2>Colleges</h2>
@@ -119,32 +151,52 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const branchCheckboxes = document.querySelectorAll('input[name="branch"]');
+            const examCheckboxes = document.querySelectorAll('input[name="exam"]');
+            const chanceCheckboxes = document.querySelectorAll('input[name="chance"]');
+
             branchCheckboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    filterColleges();
-                });
+                checkbox.addEventListener('change', filterColleges);
+            });
+
+            examCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', filterColleges);
+            });
+    
+            chanceCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', filterColleges);
             });
 
             function filterColleges() {
                 const selectedBranches = Array.from(branchCheckboxes)
-                                            .filter(checkbox => checkbox.checked)
-                                            .map(checkbox => checkbox.value);
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+
+                const selectedExams = Array.from(examCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+
+    
+                const selectedChances = Array.from(chanceCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
 
                 const collegeRows = document.querySelectorAll('.colleges-table table tbody tr');
+
                 collegeRows.forEach(function(row) {
                     const branch = row.querySelector('td:nth-child(2)').textContent;
-                    if (selectedBranches.length === 0 || selectedBranches.includes(branch)) {
+                    const exam = row.querySelector('td:nth-child(4)').textContent;
+                    const chance = row.querySelector('td:nth-child(5)').textContent;
+
+                    const branchMatch = selectedBranches.length === 0 || selectedBranches.includes(branch);
+                    const examMatch = selectedExams.length === 0 || selectedExams.includes(exam);
+                    const chanceMatch = selectedChances.length === 0 || selectedChances.includes(chance);
+
+                    if (branchMatch && examMatch && chanceMatch) {
                         row.style.display = 'table-row';
                     } else {
                         row.style.display = 'none';
                     }
                 });
-
-                if (selectedBranches.length === 0) {
-                    collegeRows.forEach(function(row) {
-                        row.style.display = 'table-row';
-                    });
-                }
             }
         });
 
@@ -186,8 +238,8 @@
             calculateChances(jeePercentile, mhcetPercentile);
         });
 
-         function printTable() {
-            // Hide columns: "Percentile" and "Exam"
+        function printTable() {
+            // Hide columns: "Percentile", "Exam", and "Chances"
             const columnsToHide = [2, 3, 4]; // Indexes of columns to hide (0-based)
             const tableHeadings = document.querySelectorAll('.colleges-table table th');
             columnsToHide.forEach(function(index) {
@@ -220,4 +272,4 @@
     </script>
 </body>
 </html>
-    
+

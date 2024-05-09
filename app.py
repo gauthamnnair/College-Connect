@@ -104,10 +104,18 @@ def submit_admission():
     mhcet_percentile = request.form.get('mhcet_percentile')
     jee_percentile = request.form.get('jee_percentile')
     category = request.form.get('category') + 'S'  # Assuming category is concatenated with 'S'
-    colleges, distinct_branches = filter_colleges(mhcet_percentile, jee_percentile, category)
+    colleges, distinct_branches, chances = filter_colleges(mhcet_percentile, jee_percentile, category)
 
     # Pass data to the result.html template
-    return render_template('result.html', colleges=colleges, distinct_branches=distinct_branches, mhcet_percentile=mhcet_percentile, jee_percentile=jee_percentile, category=category, get_college_website=get_college_website, get_page_num=get_page_num)
+    return render_template('result.html',
+                            colleges=colleges, 
+                            distinct_branches=distinct_branches, 
+                            mhcet_percentile=mhcet_percentile,
+                            jee_percentile=jee_percentile,
+                            category=category,
+                            get_college_website=get_college_website,
+                            get_page_num=get_page_num,
+                            chances= chances)
 
 # Function to fetch colleges from the database
 def filter_colleges(mhcet_percentile, jee_percentile, category):
@@ -115,6 +123,7 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
     jee_query = "SELECT college_name, branch, percentile, 'JEE', page_num FROM colleges WHERE percentile <= ? AND seat_type = 'AI' LIMIT 50"    
     colleges = []
     distinct_branches = []
+    chances = []
     try:
         with sqlite3.connect('data.db') as conn_data:
             c_data = conn_data.cursor()
@@ -139,9 +148,32 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
                 if college[1] not in distinct_branches:
                     distinct_branches.append(college[1])
 
+            # Calculate chances
+            for i, college in enumerate(colleges):
+                percentile = college[2]
+                if college[3] == 'JEE':
+                    percentile_difference = abs(float(jee_percentile) - percentile)
+                
+                elif college[3] == 'MHCET':
+                    percentile_difference = abs(float(mhcet_percentile) - percentile)
+
+                if percentile_difference < 3:
+                    chance = 'Probable'
+                elif percentile_difference < 5:
+                    chance = 'Fair Chance'
+                else:
+                    chance = 'Confirm'
+                if chance not in chances:
+                    chances.append(chance)
+
+                # Convert tuple to list, append chance, then convert back to tuple
+                college_list = list(college)
+                college_list.append(chance)
+                colleges[i] = tuple(college_list)
+
     except sqlite3.Error as e:
         print("Error querying database:", e)
-    return colleges, distinct_branches
+    return colleges, distinct_branches,chances
 
 def get_college_website(college_name):
     with sqlite3.connect('data.db') as conn_details:

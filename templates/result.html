@@ -88,6 +88,7 @@
                     {% endfor %}
                 </fieldset>
             </form>
+            {% if jee_percentile and mhcet_percentile %}
             <h2>Filter by Exam</h2>
             <form id="examFilterForm">
                 <fieldset>
@@ -102,24 +103,22 @@
                     </label><br>
                 </fieldset>
             </form>
+            {% endif %}
+
+            {% if chances|length > 1 %}
             <h2>Filter by Chances</h2>
             <form id="chanceFilterForm">
                 <fieldset>
                     <legend>Select Chances</legend>
-                    <label>
-                        <input type="checkbox" name="chance" value="Probable">
-                        Probable
-                    </label><br>
-                    <label>
-                        <input type="checkbox" name="chance" value="Fair Chance">
-                        Fair Chance
-                    </label><br>
-                    <label>
-                        <input type="checkbox" name="chance" value="Confirm">
-                        Confirm
-                    </label><br>
+                    {% for chance in chances %}
+                        <label>
+                        <input type="checkbox" name="chance" value="{{ chance }}">
+                            {{ chance }}
+                        </label><br>
+                    {% endfor %}
                 </fieldset>
             </form>
+            {% endif %}            
         </div>
         <div class="colleges-table">
             <h2>Colleges</h2>
@@ -140,7 +139,7 @@
                             <td><a href="{{ get_page_num(college[0], college[1]) }}">{{ college[1] }}</td>
                             <td>{{ college[2] }}</td>
                             <td>{{ college[3] }}</td>
-                            <td></td>
+                            <td>{{ college[5] }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -161,7 +160,7 @@
             examCheckboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', filterColleges);
             });
-    
+
             chanceCheckboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', filterColleges);
             });
@@ -175,7 +174,6 @@
                     .filter(checkbox => checkbox.checked)
                     .map(checkbox => checkbox.value);
 
-    
                 const selectedChances = Array.from(chanceCheckboxes)
                     .filter(checkbox => checkbox.checked)
                     .map(checkbox => checkbox.value);
@@ -185,11 +183,11 @@
                 collegeRows.forEach(function(row) {
                     const branch = row.querySelector('td:nth-child(2)').textContent;
                     const exam = row.querySelector('td:nth-child(4)').textContent;
-                    const chance = row.querySelector('td:nth-child(5)').textContent;
+                    const chance = row.querySelector('td:nth-child(5)');
 
                     const branchMatch = selectedBranches.length === 0 || selectedBranches.includes(branch);
                     const examMatch = selectedExams.length === 0 || selectedExams.includes(exam);
-                    const chanceMatch = selectedChances.length === 0 || selectedChances.includes(chance);
+                    const chanceMatch = selectedChances.length === 0 || selectedChances.includes(chance.textContent);
 
                     if (branchMatch && examMatch && chanceMatch) {
                         row.style.display = 'table-row';
@@ -198,44 +196,6 @@
                     }
                 });
             }
-        });
-
-        // Function to calculate chances and fill the chances column
-        function calculateChances(jeePercentile, mhcetPercentile) {
-            const collegeRows = document.querySelectorAll('.colleges-table table tbody tr');
-
-            collegeRows.forEach(function(row) {
-                const examType = row.querySelector('td:nth-child(4)').textContent;
-                let userPercentile = 0;
-
-                if (examType === 'JEE') {
-                    userPercentile = jeePercentile;
-                } else if (examType === 'MHCET') {
-                    userPercentile = mhcetPercentile;
-                }
-
-                const collegePercentile = parseFloat(row.querySelector('td:nth-child(3)').textContent);
-                const percentileDifference = Math.abs(userPercentile - collegePercentile);
-                let chance = '';
-
-                if (percentileDifference < 3) {
-                    chance = 'Probable';
-                } else if (percentileDifference < 5) {
-                    chance = 'Fair Chance';
-                } else {
-                    chance = 'Confirm';
-                }
-
-                row.querySelector('td:nth-child(5)').textContent = chance;
-            });
-        }
-
-        // Call the calculateChances function after the document is fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Assume you have passed JEE and MHCET percentiles as global variables
-            const jeePercentile = {{ jee_percentile }};
-            const mhcetPercentile = {{ mhcet_percentile }};
-            calculateChances(jeePercentile, mhcetPercentile);
         });
 
         function printTable() {
@@ -270,6 +230,7 @@
             });
         }
     </script>
+
 </body>
 </html>
 

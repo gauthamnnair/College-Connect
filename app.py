@@ -102,7 +102,7 @@ def logout():
 
 # Handle admission form submission
 @app.route('/list', methods=['POST'])
-def submit_admission():
+def search_result():  # Rename the function to avoid conflict
     mhcet_percentile = request.form.get('mhcet_percentile')
     jee_percentile = request.form.get('jee_percentile')
     category = request.form.get('category') + 'S'  # Assuming category is concatenated with 'S'

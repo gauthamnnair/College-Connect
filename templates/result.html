@@ -25,6 +25,7 @@
             border-radius: 8px;
             width: 20%;
             margin-left: 10px;
+            margin-top: 10px;
         }
 
         .colleges-table {
@@ -35,7 +36,7 @@
         }
 
         .download-button {
-            background-color: #fff;
+            background-color: #66cc66;
             padding: 10px;
             border-radius: 8px;
             text-align: center;
@@ -75,16 +76,26 @@
 </head>
 <body>
     
+    <!-- Navigation bar -->
+    <nav>
+        <ul>
+            <div class="right-group">
+                <li><a href="/signup">Sign Up</a></li>
+                <li><a href="/login">Login</a></li>
+            </div>
+        </ul>
+    </nav>
+
     <div class="tables-container">
         <div class="filter-table">
             <h2>Filter by Branch</h2>
             <form id="branchFilterForm">
-                <fieldset>
+                <fieldset style="height: 300px; overflow-y: auto;">
                     <legend>Select Branches</legend>
                     {% for branch in distinct_branches %}
                         <label>
                             <input type="checkbox" name="branch" value="{{ branch }}">
-                            {{ branch }}
+                            {{ branch }}                        
                         </label><br>
                     {% endfor %}
                 </fieldset>
@@ -150,6 +161,10 @@
         </div>
     </div>
     <button class="download-button" onclick="printTable()">Print Table as PDF</button>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 College Connect. All rights reserved.</p>
+    </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const branchCheckboxes = document.querySelectorAll('input[name="branch"]');
@@ -184,9 +199,9 @@
                 const collegeRows = document.querySelectorAll('.colleges-table table tbody tr');
 
                 collegeRows.forEach(function(row) {
-                    const branch = row.querySelector('td:nth-child(2)').textContent;
-                    const exam = row.querySelector('td:nth-child(4)').textContent;
-                    const chance = row.querySelector('td:nth-child(5)');
+                    const branch = row.querySelector('td:nth-child(3)').textContent;
+                    const exam = row.querySelector('td:nth-child(5)').textContent;
+                    const chance = row.querySelector('td:nth-child(6)');
 
                     const branchMatch = selectedBranches.length === 0 || selectedBranches.includes(branch);
                     const examMatch = selectedExams.length === 0 || selectedExams.includes(exam);

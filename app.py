@@ -83,7 +83,7 @@ def login():
 
     if user:
         # Redirect to index page with username if login is successful
-        return redirect(url_for('index', username=username))
+        return redirect('/form')
     else:
         # Redirect back to login page with an error message
         return redirect(url_for('login_form'))
@@ -94,12 +94,12 @@ def index(username):
     return f'Welcome, {username}!'
 
 # Render the admission form
-@app.route('/admission', methods=['GET'])
+@app.route('/form', methods=['GET'])
 def admission_form():
     return render_template('form.html')
 
 # Handle admission form submission
-@app.route('/submit', methods=['POST'])
+@app.route('/list', methods=['POST'])
 def submit_admission():
     mhcet_percentile = request.form.get('mhcet_percentile')
     jee_percentile = request.form.get('jee_percentile')

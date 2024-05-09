@@ -7,11 +7,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <!-- Navigation bar -->
+    <nav>
+        <ul>
+            <div class="right-group">
+                <li><a href="/signup">Sign Up</a></li>
+                <li><a href="/login">Login</a></li>
+            </div>
+        </ul>
+    </nav>
     <div class=container>
         <h2>Enter the Percentile</h2>
     </div>
     <div class=form-container>
-        <form action="/submit" method="POST" onsubmit="return validateForm()">
+        <form action="/list" method="POST" onsubmit="return validateForm()">
             <label for="mhcet_percentile">MHCET Percentile: </label>
             <input type="text" id="mhcet_percentile" name="mhcet_percentile" oninput="validateNumericInput(this, 'mhcet_error_message')">
             <span id="mhcet_error_message" class="error-message"></span><br><br>
@@ -52,6 +61,10 @@
             <input type="submit" value="Submit">
         </form>
     </div>
+    <!-- Footer -->
+    <footer style="position:fixed">
+        <p>&copy; 2024 College Connect. All rights reserved.</p>
+    </footer>
     <script>
         function validateNumericInput(input, errorMessageId) {
             var value = input.value.trim();

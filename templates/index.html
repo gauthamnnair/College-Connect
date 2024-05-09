@@ -5,64 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Welcome{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Add any global CSS or meta tags here -->
     <style>
-        /* Additional inline styles for the navbar */
-        nav {
-            background-color: #333;
-            overflow: hidden;
-            width: 100%;
-            position: fixed;
-            top: 0;
-        }
-
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            display: flex;
-            justify-content: space-between;
-            align-items: center; /* Align items vertically */
-            width: 100%;
-        }
-
-        nav .right-group {
-            display: flex;
-            justify-content: flex-end; /* Align items to the right */
-            align-items: center; /* Align items vertically */
-        }
-
-        nav li {
-            margin-left: 10px; /* Add some space between items */
-        }
-
-        nav li a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        nav li a:hover {
-            background-color: #111;
-        }
-
-        /* Footer style */
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
         .content {
             margin: 100px; /* Shift content down by 100px */
             text-align: left;
-            padding-left: 500px;
+            padding-left: 400px;
         }
         input[type="submit"],
         .get-started-btn {
@@ -96,17 +43,17 @@
 <!-- Content area -->
 <div class="content">
     {% block content %}
-        <h1>Welcome to CollegeAdvisor!</h1>
-        <p>CollegeAdvisor helps you decide which college to choose based on your MH CET or JEE percentile.</p>
+        <h1>Welcome to College Connect!</h1>
+        <p>College Connect helps you decide which college to choose based on your MH CET or JEE percentile.</p>
         <p>Enter your exam scores and preferences to get personalized recommendations.</p>
-        <a href="/admission" class="get-started-btn">Get Started</a>
+        <a href="/form" class="get-started-btn">Get Started</a>
         <!-- You can add more content here, such as a form to input scores -->
     {% endblock %}
 </div>
 
 <!-- Footer -->
-<footer>
-    <p>&copy; 2024 CollegeAdvisor. All rights reserved.</p>
+<footer style="position:fixed;">
+    <p>&copy; 2024 College Connect. All rights reserved.</p>
 </footer>
 
 </body>

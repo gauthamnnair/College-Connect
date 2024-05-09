@@ -2,9 +2,6 @@ import sqlite3
 import csv
 import pandas as pd
 
-# Connect to the database
-conn = sqlite3.connect('data.db')
-c = conn.cursor()
 
 try:
     # Fetch all records from the colleges table
@@ -64,6 +61,20 @@ df.drop_duplicates(inplace=True)
 
 # Write back to CSV
 df.to_csv('not_found.csv', index=False)
+
+
+#Enter the College Code
+with open('code.csv', newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        college_name = row['College Name']
+        code = row['Code']
+        # Connect to the database
+        conn = sqlite3.connect('data.db')
+        c = conn.cursor()
+        c.execute("UPDATE details SET code=? WHERE College_Name=?", (code,college_name))
+        conn.commit()
+        conn.close()
 
 if __name__ == "__main__":
     main()

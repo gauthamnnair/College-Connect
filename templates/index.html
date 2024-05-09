@@ -4,29 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Welcome{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        .content {
-            margin: 100px; /* Shift content down by 100px */
-            text-align: left;
-            padding-left: 400px;
-        }
-        input[type="submit"],
-        .get-started-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .get-started-btn:hover {
-            background-color: #45a049;
-        }
-
-    </style>
+    <link rel="stylesheet" href="static\styles.css">
 </head>
 <body>
 
@@ -41,13 +19,15 @@
 </nav>
 
 <!-- Content area -->
-<div class="content">
+<div style="text-align: left; margin: 0 auto; width: fit-content;">
     {% block content %}
         <h1>Welcome to College Connect!</h1>
         <p>College Connect helps you decide which college to choose based on your MH CET or JEE percentile.</p>
         <p>Enter your exam scores and preferences to get personalized recommendations.</p>
-        <a href="/form" class="get-started-btn">Get Started</a>
-        <!-- You can add more content here, such as a form to input scores -->
+        <a href="/form">
+            <input type="submit" value="Get Started" style="width:100px;">
+        </a>
+
     {% endblock %}
 </div>
 

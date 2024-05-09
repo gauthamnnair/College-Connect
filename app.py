@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response
+from flask import Flask, render_template, request, redirect
 import sqlite3
 
 app = Flask(__name__)
@@ -61,7 +61,7 @@ def signup():
         c.execute("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", (email, username, password))
 
     # Redirect to login page after successful signup
-    return redirect(url_for('login_form'))
+    return redirect('/login')
 
 # Render the login page
 @app.route('/login', methods=['GET'])
@@ -86,7 +86,7 @@ def login():
         return redirect('/form')
     else:
         # Redirect back to login page with an error message
-        return redirect(url_for('login_form'))
+        return redirect('/login')
 
 # Route for the index page with username
 @app.route('/index/<username>')

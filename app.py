@@ -1,32 +1,17 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
+import hashlib
 
 app = Flask(__name__)
 app.secret_key ='secertkey'
 
-# Function to create the database table if it doesn't exist
-def create_table():
-    with sqlite3.connect('users.db') as conn:
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS users
-                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     email TEXT NOT NULL UNIQUE,
-                     username TEXT NOT NULL,
-                     password TEXT NOT NULL)''')
-
-# Function to create the admissions table if it doesn't exist
-def create_admissions_table():
-    with sqlite3.connect('admissions.db') as conn:
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS admissions
-                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     mhcet_percentile FLOAT NOT NULL,
-                     jee_percentile FLOAT NOT NULL,
-                     category TEXT NOT NULL)''')
-
-# Create tables on startup
-create_table()
-create_admissions_table()
+with sqlite3.connect('users.db') as conn:
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS users
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 email TEXT NOT NULL UNIQUE,
+                 username TEXT NOT NULL,
+                 password TEXT NOT NULL)''')
 
 # Add login check decorator
 def login_required(f):
@@ -59,6 +44,9 @@ def signup():
     if password != repeat_password:
         return "Passwords do not match. Please try again."
 
+    # Hash the password
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
     # Check if email is already registered
     with sqlite3.connect('users.db') as conn:
         c = conn.cursor()
@@ -67,7 +55,7 @@ def signup():
             return "Email is already registered. Please use a different email."
 
         # Insert user data into the database
-        c.execute("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", (email, username, password))
+        c.execute("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", (email, username, hashed_password))
 
     # Redirect to login page after successful signup
     return redirect('/login')
@@ -83,11 +71,12 @@ def login():
     # Extract form data
     username = request.form['loginUsername']
     password = request.form['loginPassword']
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
     # Authenticate user
     with sqlite3.connect('users.db') as conn:
         c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+        c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, hashed_password))
         user = c.fetchone()
 
     if user:

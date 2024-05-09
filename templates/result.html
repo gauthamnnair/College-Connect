@@ -24,6 +24,7 @@
             background-color: #fff;
             border-radius: 8px;
             width: 20%;
+            margin-left: 10px;
         }
 
         .colleges-table {
@@ -124,8 +125,9 @@
             <h2>Colleges</h2>
             <table id="collegesTable">
                 <thead>
-                    <tr>
-                        <th style="width: 55%;">College Name</th>
+                    <tr> 
+                        <th style="width: 5%;">Code</th>
+                        <th style="width: 50%;">College Name</th>
                         <th style="width: 20%;">Branch</th>
                         <th style="width: 10%;">Percentile</th>
                         <th style="width: 5%;">Exam</th>
@@ -135,6 +137,7 @@
                 <tbody>
                     {% for college in colleges %}
                         <tr>
+                            <td>{{ college[6] }}</td>
                             <td><a href="{{ get_college_website(college[0]) }}">{{ college[0] }}</a></td>
                             <td><a href="{{ get_page_num(college[0], college[1]) }}">{{ college[1] }}</td>
                             <td>{{ college[2] }}</td>
@@ -200,7 +203,7 @@
 
         function printTable() {
             // Hide columns: "Percentile", "Exam", and "Chances"
-            const columnsToHide = [2, 3, 4]; // Indexes of columns to hide (0-based)
+            const columnsToHide = [3, 4, 5]; // Indexes of columns to hide (0-based)
             const tableHeadings = document.querySelectorAll('.colleges-table table th');
             columnsToHide.forEach(function(index) {
                 tableHeadings[index].style.display = 'none';

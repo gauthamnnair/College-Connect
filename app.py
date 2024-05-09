@@ -119,8 +119,8 @@ def submit_admission():
 
 # Function to fetch colleges from the database
 def filter_colleges(mhcet_percentile, jee_percentile, category):
-    mhcet_query = "SELECT college_name, branch, percentile, 'MHCET', page_num FROM colleges WHERE percentile <= ? AND seat_type = ? LIMIT 50"
-    jee_query = "SELECT college_name, branch, percentile, 'JEE', page_num FROM colleges WHERE percentile <= ? AND seat_type = 'AI' LIMIT 50"    
+    mhcet_query = "SELECT college_name, branch, percentile, 'MHCET', page_num FROM colleges WHERE percentile <= ? AND seat_type = ? LIMIT 150"
+    jee_query = "SELECT college_name, branch, percentile, 'JEE', page_num FROM colleges WHERE percentile <= ? AND seat_type = 'AI' LIMIT 150"    
     colleges = []
     distinct_branches = []
     chances = []
@@ -147,10 +147,14 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
             for college in colleges:
                 if college[1] not in distinct_branches:
                     distinct_branches.append(college[1])
-
-            # Calculate chances
+           
+            # Calculate chances and code
             for i, college in enumerate(colleges):
+                college_name = college[0]                
                 percentile = college[2]
+                c_data.execute("SELECT code FROM details WHERE college_name=?", (college_name,))
+                codes = c_data.fetchone()
+                code = codes[0]
                 if college[3] == 'JEE':
                     percentile_difference = abs(float(jee_percentile) - percentile)
                 
@@ -169,6 +173,7 @@ def filter_colleges(mhcet_percentile, jee_percentile, category):
                 # Convert tuple to list, append chance, then convert back to tuple
                 college_list = list(college)
                 college_list.append(chance)
+                college_list.append(code)
                 colleges[i] = tuple(college_list)
 
     except sqlite3.Error as e:
